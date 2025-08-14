@@ -10,4 +10,7 @@ function Home() {
   );
 }
 
+function teste() {
+  return "Teste";
+}
 export default Home;
