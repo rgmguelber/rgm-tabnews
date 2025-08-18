@@ -4,5 +4,3 @@ test("GET to /api/v1/status should return 200", async () => {
   const data = await response.json();
   expect(data).toEqual({ status: "OK" });
 });
-
-// TODO: Paramos aqui na aula "Versionamento de API"
