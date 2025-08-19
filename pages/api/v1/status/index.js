@@ -1,11 +1,13 @@
 import database from "infra/database.js";
 
 async function getStatus(req, res) {
-  const result = await database.query("SELECT 1+1;");
+  // const result = await database.query("SELECT 1+1;");
 
-  console.log(result.rows);
+  const updatedAt = new Date().toISOString();
 
-  res.status(200).json({ status: "OK" });
+  res.status(200).json({
+    updated_at: updatedAt,
+  });
 }
 
 export default getStatus;
