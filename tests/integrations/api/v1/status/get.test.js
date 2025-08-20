@@ -3,12 +3,16 @@ test("GET to /api/v1/status should return 200", async () => {
   expect(response.status).toBe(200);
 
   const responseBody = await response.json();
-  console.log(responseBody);
 
   // Testa se o campo updated_at está presente e é uma data válida
   const parsedUpdatedAt = new Date(responseBody.updated_at).toISOString();
-  expect(responseBody.updated_at).toBeDefined();
   expect(parsedUpdatedAt).toBe(responseBody.updated_at);
+
+  // Testa se o campo database.version retorna a versão correta
+  expect(responseBody.dependencies.database.version).toEqual("16.0");
+
+  // Testa se o campo dependencies.database.max_connections está presente
+  expect(responseBody.dependencies.database.max_connections).toEqual(100);
 });
 
 // TODO: Continuar aqui da aula do dia 20 Database "Max Connections" no minuto zero.
