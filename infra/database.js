@@ -2,6 +2,7 @@ import { Client } from "pg";
 
 async function query(queryObject) {
   let client;
+
   try {
     client = new Client({
       host: process.env.POSTGRES_HOST,
@@ -17,8 +18,9 @@ async function query(queryObject) {
     return result;
   } catch (error) {
     console.error(error);
+    throw error;
   } finally {
-    client.end();
+    await client.end();
   }
 }
 
