@@ -1,8 +1,6 @@
 import database from "infra/database.js";
 
 async function getStatus(req, res) {
-  // const result = await database.query("SELECT 1+1;");
-
   const updatedAt = new Date().toISOString();
 
   const databaseVersionResult = await database.query("SHOW server_version;");
@@ -15,7 +13,7 @@ async function getStatus(req, res) {
     databaseMaxConnectionsResult.rows[0].max_connections;
 
   const databaseOpenedConnectionsResult = await database.query(
-    "SELECT count(*) as opened_connections FROM pg_stat_activity WHERE datname = 'local_db';",
+    "SELECT count(*) as opened_connections FROM pg_stat_activity WHERE datname = '${}';",
   );
   const databaseOpenedConnections =
     databaseOpenedConnectionsResult.rows[0].opened_connections;
