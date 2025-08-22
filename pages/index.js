@@ -6,6 +6,8 @@ function Home() {
         This is a clone of TabNews by Felipe Deschamps, created following the
         curso.dev
       </p>
+
+      <p>HOMOLOGAÇÃO ENVIROMENT</p>
     </div>
   );
 }
