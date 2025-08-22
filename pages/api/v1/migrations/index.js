@@ -4,9 +4,7 @@ import { join } from "path";
 
 export default async function Migrations(req, res) {
   if (req.method !== "GET" && req.method !== "POST") {
-    return res
-      .status(405)
-      .json({ error: `Method "${req.method}" Not Allowed` });
+    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
 
   let dbClient;
