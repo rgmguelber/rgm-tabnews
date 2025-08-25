@@ -1,3 +1,9 @@
+import orchestrator from "infra/orchestrator";
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+});
+
 test("GET to /api/v1/status should return 200", async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
   expect(response.status).toBe(200);
@@ -14,5 +20,3 @@ test("GET to /api/v1/status should return 200", async () => {
   // Testa se o campo dependencies.database.max_connections está presente
   expect(responseBody.dependencies.database.max_connections).toEqual(100);
 });
-
-// TODO: Continuar aqui da aula do dia 20 Database "Max Connections" no minuto zero.
