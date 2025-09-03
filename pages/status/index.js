@@ -1,13 +1,15 @@
 import useSWR from "swr";
 
-async function fetchStatus() {
-  const response = await fetch("/api/v1/status");
+async function fetchAPI(key) {
+  const response = await fetch(key);
   const responseBody = await response.json();
   return responseBody;
 }
 
 export default function StatusPage() {
-  const response = useSWR("status", fetchStatus);
+  const { data, isLoading } = useSWR("/api/v1/status", fetchAPI, {
+    refreshInterval: 5000,
+  });
 
   return (
     <>
@@ -16,28 +18,26 @@ export default function StatusPage() {
       <div>
         <p>
           <strong>Data Atualização: </strong>
-          {response.isLoading ? "Carregando" : response.data.updated_at}
+          {isLoading ? "Carregando..." : data.updated_at}
         </p>
 
         <p>
           <strong>Versão do Postgres: </strong>
-          {response.isLoading
-            ? "Carregando"
-            : response.data.dependencies.database.version}
+          {isLoading ? "Carregando..." : data.dependencies.database.version}
         </p>
 
         <p>
           <strong>Conexões Máximas: </strong>
-          {response.isLoading
-            ? "Carregando"
-            : response.data.dependencies.database.max_connections}
+          {isLoading
+            ? "Carregando..."
+            : data.dependencies.database.max_connections}
         </p>
 
         <p>
           <strong>Conexões Abertas: </strong>
-          {response.isLoading
-            ? "Carregando"
-            : response.data.dependencies.database.opened_connections}
+          {isLoading
+            ? "Carregando..."
+            : data.dependencies.database.opened_connections}
         </p>
       </div>
     </>
