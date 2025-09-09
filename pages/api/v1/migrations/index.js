@@ -40,6 +40,6 @@ export default async function Migrations(req, res) {
     console.error(error);
     throw error;
   } finally {
-    await dbClient.end();
+    if (dbClient) await dbClient.end();
   }
 }
