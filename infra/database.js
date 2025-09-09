@@ -9,10 +9,12 @@ async function query(queryObject) {
 
     return result;
   } catch (error) {
+    console.log("\n Erro dentro do catch do database.")
     console.error(error);
     throw error;
   } finally {
-    await client.end();
+    if (client)
+      await client.end();
   }
 }
 
