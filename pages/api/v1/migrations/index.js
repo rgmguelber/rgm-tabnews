@@ -1,45 +1,60 @@
+import { createRouter } from "next-connect";
 import database from "infra/database";
 import migrationRunner from "node-pg-migrate";
 import { join } from "path";
+import controller from "infra/controller.js";
 
-export default async function Migrations(req, res) {
-  if (req.method !== "GET" && req.method !== "POST") {
-    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-  }
+// Define quais métodos são permitidos através do next-connect
+const router = createRouter();
 
+router.get(getHandler);
+router.post(postHandler);
+
+export default router.handler(controller.errorHandlers);
+
+// ************************************************************
+
+const defaultgetHandlerOptions = {
+  dryRun: true,
+  dir: join("infra", "migrations"),
+  direction: "up",
+  verbose: true,
+  getHandlerTable: "pgmigrations",
+};
+
+async function getHandler(req, res) {
   let dbClient;
   try {
     dbClient = await database.getNewClient();
 
-    const defaultMigrationsOptions = {
-      dbClient: dbClient,
-      dryRun: true,
-      dir: join("infra", "migrations"),
-      direction: "up",
-      verbose: true,
-      migrationsTable: "pgmigrations",
-    };
-
-    if (req.method === "GET") {
-      const pendingMigrations = await migrationRunner(defaultMigrationsOptions);
-      res.status(200).json(pendingMigrations);
-    }
-
-    if (req.method === "POST") {
-      const migratedMigrations = await migrationRunner({
-        ...defaultMigrationsOptions,
-        dryRun: false,
-      });
-      if (migratedMigrations.length > 0) {
-        return res.status(201).json(migratedMigrations);
-      }
-
-      return res.status(200).json(migratedMigrations);
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
+    const pendingMigrations = await migrationRunner({
+      ...defaultgetHandlerOptions,
+      dbClient,
+    });
+    res.status(200).json(pendingMigrations);
   } finally {
     if (dbClient) await dbClient.end();
   }
 }
+
+async function postHandler(req, res) {
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
+
+    const migratedgetHandler = await migrationRunner({
+      ...defaultgetHandlerOptions,
+      dbClient,
+      dryRun: false,
+    });
+    if (migratedgetHandler.length > 0) {
+      return res.status(201).json(migratedgetHandler);
+    }
+
+    return res.status(200).json(migratedgetHandler);
+  } finally {
+    if (dbClient) await dbClient.end();
+  }
+}
+
+// TODO: Continuar do video Padronizar Controllers (Abstração Nível 2) - 09:55
