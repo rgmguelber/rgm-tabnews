@@ -23,9 +23,14 @@ async function clearDatabase() {
   await database.query("DROP SCHEMA public cascade; CREATE SCHEMA public;");
 }
 
+async function runPendingMigrations() {
+  await migrator.runPendingMigrations();
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
+  runPendingMigrations,
 };
 
 export default orchestrator;
