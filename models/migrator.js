@@ -6,7 +6,8 @@ const defaultgetHandlerOptions = {
   dryRun: true,
   dir: join("infra", "migrations"),
   direction: "up",
-  verbose: true,
+  // verbose: true,
+  log: () => {},
   getHandlerTable: "pgmigrations",
 };
 
