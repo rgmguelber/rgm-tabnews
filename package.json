@@ -12,7 +12,7 @@
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "next lint --dir .",
     "test": "clear ; npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
-    "test:watch": "clear ; jest --watchAll --runInBand",
+    "test:watch": "clear ; jest --watchAll --runInBand --verbose",
     "migrations:create": "node-pg-migrate -m infra/migrations create",
     "migrations:up": "node-pg-migrate -m infra/migrations --envPath .env.development up",
     "wait-for-postgres": "node infra/scripts/wait-for-postgres.js",
@@ -39,7 +39,8 @@
     "pg": "8.16.3",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "swr": "^2.3.6"
+    "swr": "^2.3.6",
+    "uuid": "11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.1",
