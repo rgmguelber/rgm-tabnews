@@ -120,5 +120,3 @@ describe("POST to /api/v1/users", () => {
     });
   });
 });
-
-// TODO: Continuar da aula Criar model "user" em 11:59
