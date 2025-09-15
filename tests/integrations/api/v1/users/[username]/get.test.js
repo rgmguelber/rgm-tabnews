@@ -102,5 +102,3 @@ describe("GET to /api/v1/users/[username]", () => {
     });
   });
 });
-
-// TODO: Continuar da aula Criar endpoint "/api/v1/users/[username]" no 25:38
