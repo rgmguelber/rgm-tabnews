@@ -32,17 +32,9 @@ async function findOneByUsername(username) {
   }
 }
 
-async function create(userInputValues) {
-  await validateUniqueEmail(userInputValues.email);
-  await validateUniqueUsername(userInputValues.username);
-  await hashPasswordInObject(userInputValues);
-
-  const newUser = await runInsertQuery(userInputValues);
-  return newUser;
-
-  async function validateUniqueEmail(email) {
-    const results = await database.query({
-      text: `
+async function validateUniqueEmail(email) {
+  const results = await database.query({
+    text: `
           SELECT  
             email
           FROM  
@@ -50,20 +42,20 @@ async function create(userInputValues) {
           WHERE
             LOWER(email) = LOWER($1)
           ;`,
-      values: [email],
+    values: [email],
+  });
+
+  if (results.rowCount > 0) {
+    throw new ValidationError({
+      message: "O email informado já está sendo utilizado.",
+      action: "Utilize outro email para realizar esta operação.",
     });
-
-    if (results.rowCount > 0) {
-      throw new ValidationError({
-        message: "O email informado já está sendo utilizado.",
-        action: "Utilize outro email para realizar o cadastro.",
-      });
-    }
   }
+}
 
-  async function validateUniqueUsername(username) {
-    const results = await database.query({
-      text: `
+async function validateUniqueUsername(username) {
+  const results = await database.query({
+    text: `
           SELECT  
             username
           FROM  
@@ -71,21 +63,29 @@ async function create(userInputValues) {
           WHERE
             LOWER(username) = LOWER($1)
           ;`,
-      values: [username],
+    values: [username],
+  });
+
+  if (results.rowCount > 0) {
+    throw new ValidationError({
+      message: "O username informado já está sendo utilizado.",
+      action: "Utilize outro username para realizar esta operação.",
     });
-
-    if (results.rowCount > 0) {
-      throw new ValidationError({
-        message: "O username informado já está sendo utilizado.",
-        action: "Utilize outro username para realizar o cadastro.",
-      });
-    }
   }
+}
 
-  async function hashPasswordInObject(userInputValues) {
-    const hashedpassword = await password.hash(userInputValues.password);
-    userInputValues.password = hashedpassword;
-  }
+async function hashPasswordInObject(userInputValues) {
+  const hashedpassword = await password.hash(userInputValues.password);
+  userInputValues.password = hashedpassword;
+}
+
+async function create(userInputValues) {
+  await validateUniqueUsername(userInputValues.username);
+  await validateUniqueEmail(userInputValues.email);
+  await hashPasswordInObject(userInputValues);
+
+  const newUser = await runInsertQuery(userInputValues);
+  return newUser;
 
   async function runInsertQuery(userInputValues) {
     const results = await database.query({
@@ -108,9 +108,57 @@ async function create(userInputValues) {
   }
 }
 
+async function update(username, userInputValues) {
+  const currentUser = await findOneByUsername(username);
+
+  if ("username" in userInputValues)
+    await validateUniqueUsername(userInputValues.username);
+
+  if ("email" in userInputValues)
+    await validateUniqueEmail(userInputValues.email);
+
+  if ("password" in userInputValues)
+    await hashPasswordInObject(userInputValues);
+
+  const userWithNewValues = { ...currentUser, ...userInputValues };
+
+  const updatedUser = await runUpdateQuery(userWithNewValues);
+
+  return updatedUser;
+
+  async function runUpdateQuery(userInputValues) {
+    const results = await database.query({
+      text: `
+          UPDATE 
+            users
+          SET 
+            username = $2,
+            email = $3,
+            password = $4,
+            updated_at = timezone('UTC', now())
+          WHERE 
+            id = $1
+          RETURNING
+            *            
+          ;`,
+      values: [
+        userInputValues.id,
+        userInputValues.username,
+        userInputValues.email,
+        userInputValues.password,
+      ],
+    });
+
+    return results.rows[0];
+  }
+}
+
 const user = {
   create,
+  update,
   findOneByUsername,
 };
 
 export default user;
+
+// TODO: Continuar do vídeo Atualizando User e Hash (Modo Guerrilha) em 12:31
