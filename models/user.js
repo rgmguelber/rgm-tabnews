@@ -160,5 +160,3 @@ const user = {
 };
 
 export default user;
-
-// TODO: Continuar do vídeo Atualizando User e Hash (Modo Guerrilha) em 12:31
