@@ -48,4 +48,4 @@ const orchestrator = {
 
 export default orchestrator;
 
-// TODO: Continuar em Utilizando Faker.js para criar Usuários em 05:50
+// TODO: continuar de Criar Sessões (Modo Guerrilha) - Inicio do video
