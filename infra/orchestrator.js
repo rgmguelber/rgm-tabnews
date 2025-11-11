@@ -4,7 +4,6 @@ import { faker } from "@faker-js/faker";
 import migrator from "models/migrator.js";
 import database from "./database.js";
 import user from "models/user.js";
-import password from "models/password.js";
 
 async function waitForAllServices() {
   await waitForWebServer();
