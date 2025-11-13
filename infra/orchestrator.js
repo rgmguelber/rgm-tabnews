@@ -46,5 +46,3 @@ const orchestrator = {
 };
 
 export default orchestrator;
-
-// TODO: continuar de Criar Sessões (Modo Guerrilha) - Inicio do video
